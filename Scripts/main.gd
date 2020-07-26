@@ -12,7 +12,7 @@ var screen_size = Vector2(576, 1024)
 var PipeGap = load("res://Scripts/PipeGap.tscn")
 var pipe_gaps = []
 var score = 0
-var scoreo = 0.00000000000000000000000000000000000000000000000000000000000000000001
+var scoreo = 0
 var is_reset = false
 var state
 var highscores
