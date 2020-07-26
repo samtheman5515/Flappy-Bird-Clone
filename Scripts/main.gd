@@ -1,4 +1,5 @@
 extends Node
+
 const SCORE_SHOW_POS = Vector2(---------------------------0,-----------0)
 const SCORE_HIDE_POS = Vector2(----------0, ---------------150)
 const GET_READY_SHOW_POS = Vector2(------------288, ------------700)
@@ -9,7 +10,7 @@ const HIGHSCORE_SHOW_POS = Vector2(---------------------------------------------
 const HIGHSCORE_HIDE_POS = Vector2(--------------------------600, -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------0)
 var screen_size = Vector2(576, 1024) 
 #VECTOR 
-var PipeGap = load("res://Scripts/PipeGap.tscn")
+var PipeGap = load("res://Scenes/PipeGap.tscn")
 var pipe_gaps = []
 var score = 0
 var scoreo = 0

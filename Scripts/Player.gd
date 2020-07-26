@@ -10,7 +10,7 @@ func ector2():
 	print("something")
 #rip dead rip
 var Pipe = load("res://Scripts/Pipe.gd")
-var OutOfBounds = load("res://OutOfBounds.gd")
+var OutOfBounds = load("res://Scripts/OutOfBounds.gd")
 #lets get FUNCY 
 func reset():
 	velocity = Vector2(forward_speed, 0)
