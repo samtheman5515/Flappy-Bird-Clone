@@ -1,9 +1,9 @@
 [gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Assets/background.png" type="Texture" id=1]
-[ext_resource path="res://Scripts/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scripts/main.gd" type="Script" id=3]
-[ext_resource path="res://Scripts/OutOfBounds.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scenes/OutOfBounds.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Assets/clear.wav" type="AudioStream" id=5]
 [ext_resource path="res://Assets/fail.wav" type="AudioStream" id=6]
 [ext_resource path="res://Assets/CATimage.jpg" type="Texture" id=7]
