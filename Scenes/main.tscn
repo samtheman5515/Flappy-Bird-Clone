@@ -63,6 +63,32 @@ position = Vector2( 288, 100 )
 scale = Vector2( 4, 4 )
 texture = ExtResource( 10 )
 
+[node name="NameEntry" type="LineEdit" parent="UI"]
+margin_left = 163.0
+margin_top = 400.0
+margin_right = 413.0
+margin_bottom = 440.0
+align = 1
+max_length = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PasswordEntry" type="LineEdit" parent="UI"]
+margin_left = 163.0
+margin_top = 450.0
+margin_right = 413.0
+margin_bottom = 490.0
+align = 1
+max_length = 10
+secret = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HTTPRequest" type="HTTPRequest" parent="UI"]
+timeout = 10
+
 [node name="Background(bobafett)" type="Sprite" parent="."]
 position = Vector2( 288, 512 )
 scale = Vector2( 2, 2 )
@@ -89,4 +115,5 @@ stream = ExtResource( 5 )
 stream = ExtResource( 6 )
 
 [node name="Tween" type="Tween" parent="."]
+[connection signal="request_completed" from="UI/HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
 [connection signal="got_hit" from="Player" to="." method="_on_Player_got_hit"]

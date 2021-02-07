@@ -19,6 +19,8 @@ var state
 var highscores
 var max_pipe_distance
 var last_pipe_y
+var player_name
+var password
 func tween_node(node, property, initial_value, final_value):
 	$Tween.interpolate_property(node, property, initial_value, final_value, 0.5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
 	$Tween.start()
@@ -45,9 +47,19 @@ func _ready():
 		highscores_file.close()
 	else:
 		highscores = []
+	var name_file = File.new()
+	if name_file.file_exists("user://name.save"):
+		name_file.open("user://name.save", File.READ)
+		player_name=name_file.get_line()
+		password = name_file.get_line()
+		name_file.close()
+	else:
+		player_name= ""
 	
 	randomize()
 	reset()
+	$UI/NameEntry.hide()
+	$UI/PasswordEntry.hide()
 	$UI/ScoreLabel.rect_position = SCORE_HIDE_POS
 	$UI/HighScoreLabel.rect_position = HIGHSCORE_HIDE_POS
 	print("Ok guys just use your imagination, ok?")
@@ -103,6 +115,29 @@ func _process(delta):
 			tween_node($UI/HighScoreLabel, "rect_position", HIGHSCORE_SHOW_POS, HIGHSCORE_HIDE_POS)
 			tween_node($UI/GetReadySprite, "position", GET_READY_HIDE_POS, GET_READY_SHOW_POS)
 			tween_node($UI/TitleSprite, "position", TITLE_HIDE_POS, TITLE_SHOW_POS)
+			if $UI/NameEntry.is_visible_in_tree():
+				$UI/NameEntry.hide()
+				$UI/PasswordEntry.hide()
+				var playername = $UI/NameEntry.text
+				var pwd = $UI/PasswordEntry.text
+				if playername.ends_with(" "):
+					playername = playername.substr(0, len(playername)-1)
+				if pwd.ends_with(" "):
+					pwd = pwd.substr(0, len(pwd)-1)
+				#pwd = pwd.to_utf8().hex_encode()
+				if playername != "" :
+					if $UI/HTTPRequest.get_http_client_status()==HTTPClient.STATUS_CONNECTING:
+						$UI/HTTPRequest.cancel_request()
+					$UI/HTTPRequest.request("http://localhost/flappybird-score.php?name="+playername+"&score="+str(score)+"&password="+pwd)
+					if player_name != playername:
+						player_name=playername
+						password = pwd
+						var name_file = File.new()
+						name_file.open("user://name.save", File.WRITE)
+						name_file.store_line(player_name)
+						name_file.store_line(password)
+						name_file.close()
+				 
 #			(VECTOR *plays the wii after kidnapping children that were selling cookies in order to steal the moon *)
 			reset()
 #MAIN.GD.GD.MAIN.
@@ -129,7 +164,32 @@ func _on_Player_got_hit():
 	highscoresfile.close()
 	if new_highscore:
 		$UI/HighScoreLabel.text = "New Highscore"
-	else:
-		$UI/HighScoreLabel.text = "Current Highscore:\n" + str(highscores[-1])
+		$UI/NameEntry.clear()
+		$UI/PasswordEntry.clear()
+		$UI/NameEntry.text=player_name
+		$UI/PasswordEntry.text=password
+		$UI/NameEntry.show()
+		$UI/PasswordEntry.show()
+	elif player_name != "":
+		$UI/HTTPRequest.request("http://localhost/flappybirdget.php?name="+player_name)
+		$UI/HighScoreLabel.text = "Retrieving highscore..."
+	else: 
+		$UI/HighScoreLabel.text="Local high score:\n"+str(highscores[-1])
 	tween_node($UI/HighScoreLabel, "rect_position", HIGHSCORE_HIDE_POS, HIGHSCORE_SHOW_POS)
 #BE SURE TO GIVE ALL YOUR MONEY TO SAM CLARK
+
+
+func _on_HTTPRequest_request_completed(result, response_code, headers, body):
+	if !$UI/NameEntry.is_visible_in_tree():
+		if response_code==200:
+			var bodystr = body.get_string_from_utf8();
+			var index = bodystr.find(",")
+			if index != -1:
+				var rank = int(bodystr.substr(0,index))
+				var oscore = int(bodystr.substr(index+1))
+				$UI/HighScoreLabel.text="Online high score:\n#"+str(rank)+" - "+str(oscore)
+		elif response_code == 0:
+			$UI/HighScoreLabel.text="Local high score:\n"+str(highscores[-1])
+		else:
+			$UI/HighScoreLabel.text="Could not get highscore:\n"+str(response_code)
+			print(body.get_string_from_utf8())
